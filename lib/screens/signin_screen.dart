@@ -122,7 +122,8 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const LogoWithName(iconSize: 12, fontSize: 15.5),
+            const IntrinsicHeight(
+                child: LogoWithName(iconSize: 12, fontSize: 15.5)),
             Expanded(
               child: Align(
                 alignment: Alignment.center,

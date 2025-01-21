@@ -57,6 +57,8 @@ class _CreateTaskState extends State<CreateTask> {
       notifiDate = DateFormat('dd MMMM yyyy, EEEE').parse(task.date);
       DateTime dt = DateFormat.jm().parseLoose(task.startTime);
       notifiTime = TimeOfDay.fromDateTime(dt);
+    } else {
+      _selectedCategory = 'others';
     }
   }
 
@@ -223,9 +225,8 @@ class _CreateTaskState extends State<CreateTask> {
         _startTimeController.text.isNotEmpty &&
         _endTimeController.text.isNotEmpty) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      print('DEBUG - ${TaskIdManager.getNextId()}');
       final Task newTask = Task(
-        id: 5,
+        id: TaskIdManager.getNextId(),
         name: _taskNameController.text,
         category: _selectedCategory,
         date: _dateController.text,
@@ -240,8 +241,8 @@ class _CreateTaskState extends State<CreateTask> {
         if (newTask.alarmMode == 'on') {
           NotificationService().showNotification(
             id: newTask.id,
-            title: newTask.name,
-            body: newTask.desc,
+            title: 'You have a task to start ⚡',
+            body: newTask.name,
             scheduledDate: DateTime(notifiDate.year, notifiDate.month,
                 notifiDate.day, notifiTime.hour, notifiTime.minute, 0, 0),
           );
@@ -272,8 +273,8 @@ class _CreateTaskState extends State<CreateTask> {
         if (newTask.alarmMode == 'on') {
           NotificationService().showNotification(
             id: updatedTask.id,
-            title: updatedTask.name,
-            body: updatedTask.desc,
+            title: 'You have a task to start ⚡',
+            body: newTask.name,
             scheduledDate: DateTime(notifiDate.year, notifiDate.month,
                 notifiDate.day, notifiTime.hour, notifiTime.minute, 0, 0),
           );
@@ -453,6 +454,7 @@ class _CreateTaskState extends State<CreateTask> {
                   const SizedBox(height: 16),
                   Consumer<AlarmStateProvider>(
                     builder: (context, value, child) {
+                      String state = value.selectedButton;
                       return Row(
                         spacing: 16,
                         children: [
@@ -460,15 +462,14 @@ class _CreateTaskState extends State<CreateTask> {
                             child: ElevatedButton(
                               onPressed: () => alarmOnTap('on', context),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: _alarmMode == 'on'
+                                backgroundColor: state == 'on'
                                     ? selectedBtnColor
                                     : defaultBtnColor,
                               ),
                               child: Icon(
                                 Symbols.alarm_on,
-                                color: _alarmMode == 'on'
-                                    ? Colors.white
-                                    : Colors.black,
+                                color:
+                                    state == 'on' ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
@@ -476,12 +477,12 @@ class _CreateTaskState extends State<CreateTask> {
                             child: ElevatedButton(
                               onPressed: () => alarmOnTap('off', context),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: _alarmMode == 'off'
+                                backgroundColor: state == 'off'
                                     ? selectedBtnColor
                                     : defaultBtnColor,
                               ),
                               child: Icon(Symbols.alarm_off,
-                                  color: _alarmMode == 'off'
+                                  color: state == 'off'
                                       ? Colors.white
                                       : Colors.black),
                             ),

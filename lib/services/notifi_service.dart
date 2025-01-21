@@ -76,8 +76,6 @@ class NotificationService {
     required DateTime scheduledDate,
   }) async {
     try {
-      print('DEBUG - ID is $id');
-      print('DEBUG - $scheduledDate');
       await flutterLocalNotificationsPlugin.zonedSchedule(
         id,
         title,
@@ -89,10 +87,8 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.alarmClock,
         matchDateTimeComponents: DateTimeComponents.dateAndTime,
       );
-      print('DEBUG - Notification Called');
-    } catch (e, stackTrace) {
-      print('DEBUG - Failed to schedule notification: $e');
-      print('DEBUG: $stackTrace');
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
